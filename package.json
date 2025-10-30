@@ -1,0 +1,23 @@
+{
+  "name": "wirevana",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Wirevana monorepo housing the CLI, renderer, and runtime packages.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [],
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "pnpm -r run build",
+    "publish-packages": "pnpm build && pnpm -r publish --access public"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "typescript": "^5.4.5"
+  }
+}

@@ -12,7 +12,10 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm --splitting false --dts false --target es2020 --out-dir dist"
   },
+  "license": "MIT",
   "dependencies": {
+    "@wirevana/renderer": "workspace:*",
+    "@wirevana/runtime": "workspace:*",
     "tsup": "^7.2.0"
   }
 }

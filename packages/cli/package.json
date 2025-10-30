@@ -1,0 +1,18 @@
+{
+  "name": "@wirevana/cli",
+  "version": "0.0.1",
+  "description": "Wirevana CLI for building ChatGPT Canvas bundles.",
+  "type": "module",
+  "bin": {
+    "wirevana": "dist/index.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --splitting false --dts false --target es2020 --out-dir dist"
+  },
+  "dependencies": {
+    "tsup": "^7.2.0"
+  }
+}

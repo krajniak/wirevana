@@ -10,6 +10,9 @@ wirevana build-canvas ./examples/canvas-entry.ts
 ## Documentation
 - [AI-first product specification](docs/ai_first_spec.md)
 
+## MVP Instructions
+- Read the [Canvas quickstart](docs/mvp-canvas-quickstart.md) for an overview of the DSL shape, supported MAUI components, and Canvas embedding workflow.
+
 ## Vision Highlights
 - Describe MAUI wireframes through runnable JavaScript/TypeScript modules with imports and a `render()` entry point.
 - Render interactive mock applications via a TypeScript/React runtime that mirrors MAUI controls, including the MAUI Community Toolkit.

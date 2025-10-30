@@ -5,7 +5,39 @@ const uiMock = defineWireframe({
   name: "MvpAllComponentsShowcase",
   description:
     "Demonstrates every MVP-supported control, including navigation, lists, cards, forms, and overlays for an item lending tracker.",
-  imports: ["@wirevana/maui-core", "@wirevana/maui-community-toolkit"],
+  imports: [
+    {
+      namespace: "http://schemas.microsoft.com/dotnet/2021/maui",
+      description:
+        "Default MAUI controls (Shell, ContentPage, Border, Grid, CollectionView, Entry, Picker, etc.).",
+      docUrl: "https://learn.microsoft.com/dotnet/maui/user-interface/controls/",
+    },
+    {
+      alias: "x",
+      namespace: "http://schemas.microsoft.com/winfx/2009/xaml",
+      description: "XAML language primitives used by DataTemplate bindings and static resources.",
+      docUrl: "https://learn.microsoft.com/dotnet/maui/xaml/fundamentals/xaml-basics",
+    },
+    {
+      alias: "toolkit",
+      namespace: "http://schemas.microsoft.com/dotnet/2022/maui/toolkit",
+      assembly: "CommunityToolkit.Maui",
+      description: "Toolkit helpers used for Popup and Snackbar experiences.",
+      docUrl: "https://learn.microsoft.com/dotnet/communitytoolkit/maui/overview",
+    },
+    {
+      alias: "toolkitViews",
+      namespace: "clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui",
+      description: "Popup visual element hosting the create/edit loan form.",
+      docUrl: "https://learn.microsoft.com/dotnet/communitytoolkit/maui/views/popup",
+    },
+    {
+      alias: "toolkitAlerts",
+      namespace: "clr-namespace:CommunityToolkit.Maui.Alerts;assembly=CommunityToolkit.Maui",
+      description: "Snackbar alert emitted after saving or undoing a loan.",
+      docUrl: "https://learn.microsoft.com/dotnet/communitytoolkit/maui/alerts/snackbar",
+    },
+  ],
   metadata: {
     platforms: ["ios", "android"],
     targetHost: "chatgpt-canvas",

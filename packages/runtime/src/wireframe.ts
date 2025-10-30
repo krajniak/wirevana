@@ -1,8 +1,39 @@
+export interface WireframeImport {
+  /**
+   * Optional XML namespace prefix that should be declared when translating the
+   * DSL definition into XAML. Mirrors the `xmlns:` alias syntax used by MAUI
+   * and the CommunityToolkit.
+   */
+  readonly alias?: string;
+  /**
+   * Fully-qualified namespace URI or CLR namespace for the import. See
+   * https://learn.microsoft.com/dotnet/maui/xaml/fundamentals/xaml-namespace
+   * for details on namespace declarations.
+   */
+  readonly namespace: string;
+  /**
+   * Optional assembly hint for CLR namespace declarations.
+   */
+  readonly assembly?: string;
+  /**
+   * Link to the official control documentation that explains how the
+   * namespace should be used. Including this makes it easier for downstream
+   * agents to confirm the correct mapping when emitting XAML.
+   */
+  readonly docUrl?: string;
+  /**
+   * Free-form note describing which controls within the DSL rely on this
+   * namespace. This helps LLM agents select the right namespace when
+   * generating markup.
+   */
+  readonly description?: string;
+}
+
 export interface WireframeDefinition {
   readonly $schema?: string;
   readonly name: string;
   readonly description?: string;
-  readonly imports?: readonly string[];
+  readonly imports?: readonly (string | WireframeImport)[];
   readonly metadata?: Record<string, unknown>;
   readonly sampleData?: Record<string, unknown>;
   readonly actions?: Record<string, unknown>;

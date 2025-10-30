@@ -32,16 +32,13 @@
 1. **DSL Compiler**
    - Parser and validator for runnable JavaScript/TypeScript DSL modules with `import` and `render()` semantics.
    - Emits normalized AST consumed by both MAUI generator and JS renderer.
-2. **MAUI Generator (Phase 2)**
-   - Converts AST into annotated XAML snippets.
-   - Generates resource dictionaries, view models, and sample data.
-3. **Interactive Renderer**
+2. **Interactive Renderer**
    - TypeScript/React runtime with custom JSX components matching MAUI controls.
    - Renders AST into an interactive, visually approximate wireframe.
-4. **Component Registry**
+3. **Component Registry**
    - Metadata describing control props, layout rules, bindings, default styles.
    - Shared across compiler and renderer.
-5. **Tooling & Distribution**
+4. **Tooling & Distribution**
    - CLI for scaffolding projects, linting DSL files, running preview servers, and exporting assets.
    - NPM package exposing runtime, CLI binaries, and React components.
 
@@ -50,7 +47,6 @@
 2. CLI validates schema, resolves imports to component registry, and compiles AST.
 3. AST feeds:
    - **Interactive preview**: JS runtime renders AST within ChatGPT Canvas or standalone preview.
-   - **Code generation**: (Phase 2) XAML generator produces MAUI pages and resource files.
 4. Feedback loops: Telemetry and comments from preview feed into DSL revisions.
 
 ### 5.3 Deployment Targets
@@ -108,16 +104,17 @@ export default uiMock;
 The DSL dictionary retains a JSON-like structure but lives inside executable modules. Components are declared under the `components` key and can reference other components or imported modules. Nested objects follow the same rules as the original JSON schema, benefiting from JavaScript tooling (autocompletion, comments, computed values if enabled via build config).
 
 ### 6.3 Props, Bindings, and Interactions
-- **Props**: Declared as object literals mapping to MAUI properties. Example: `props: { text: "Sign in", fontSize: 24 }`.
-- **Bindings**: Use declarative expressions referencing view model state, e.g. `bind: { text: "user.email" }`.
+- **Props**: Declared as object literals mapping to MAUI properties. Example: `props: { text: "Sign in", style: "sign-in-button" }`.
+- **Bindings**: Use declarative expressions referencing view model state, e.g. `props: { bind: "user.email" }`.
 - **Interactions**: Define event handlers referencing actions: `interactions: { Tapped: "actions.submit" }`.
 - **Actions**: Declared under `"actions"` with types (`navigation`, `command`, `apiCall`).
-- **State Models**: JSON schema (consumed from within the module) describing view model state enabling AI to reason about data flow.
+- **State Models**: Datamodels infered from bindings
+- **Components**: Reusable complex parts of UI that can be used in different Pages/Views
 
 ### 6.4 Layout Primitives
 - **FlexLayout** & **Grid** abstractions with cross-platform constraints.
 - **Adaptive Rules**: Provide `when` clauses for device type/orientation adjustments.
-- **Design Tokens**: `tokens: { color: "primary/500" }` referencing design system.
+- **Styles**: Components will be formatted by referencing styles or components.
 
 ### 6.5 Metadata for AI Agents
 - `description`: Natural language hints for agents.

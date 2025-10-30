@@ -2,6 +2,11 @@
 
 Wirevana is an AI-first design-to-code system that introduces a declarative DSL for .NET MAUI UI surfaces and an interactive JSX renderer tailored for ChatGPT Canvas. This repository currently hosts the product specification and will evolve into the monorepo for the DSL compiler, renderer, CLI, and component registry.
 
+```bash
+pnpm add -D @wirevana/cli
+wirevana build-canvas ./examples/canvas-entry.ts
+```
+
 ## Documentation
 - [AI-first product specification](docs/ai_first_spec.md)
 

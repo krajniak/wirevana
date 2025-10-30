@@ -1,0 +1,16 @@
+{
+  "name": "@wirevana/runtime",
+  "version": "0.0.1",
+  "description": "Core Wirevana runtime primitives and DSL types for ChatGPT Canvas bundles.",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "license": "MIT"
+}

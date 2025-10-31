@@ -41,29 +41,35 @@ export function WireframeRenderer({ wireframe }: { wireframe: WireframeDefinitio
   };
 
   // Component renderer that maps wireframe components to React components
-  const renderComponent = (componentId: string, extraProps?: any): React.ReactElement => {
-    const componentDef = wireframe.components[componentId];
+  const renderComponent = (componentDef: any, key?: string): React.ReactElement => {
     if (!componentDef) {
-      return <div key={componentId}>Component '{componentId}' not found</div>;
+      return <div key={key}>Component definition not found</div>;
     }
 
-    const props = { ...componentDef.props, ...extraProps };
+    const componentId = key || componentDef.id;
+    const definition = componentDef.component 
+      ? wireframe.components[componentDef.component] 
+      : componentDef;
 
-    switch (componentDef.type) {
+    if (!definition) {
+      return <div key={componentId}>Component '{componentDef.component}' not found</div>;
+    }
+
+    const props = { ...definition.props, ...componentDef.props };
+
+    switch (definition.type) {
       case "Border":
         return (
           <Components.BorderCard
             key={componentId}
             header={resolveBinding(props.header)}
             footer={resolveBinding(props.footer)}
-            background={props.background}
+            variant={props.variant || "default"}
             padding={props.padding}
             style={props.style}
           >
-            {componentDef.layout?.children?.map((child: any, index: number) => 
-              typeof child.component === "string" 
-                ? renderComponent(child.component, child.props)
-                : renderComponent(`inline-${index}`, child)
+            {definition.layout?.children?.map((child: any, index: number) => 
+              renderComponent(child, `${componentId}-child-${index}`)
             )}
           </Components.BorderCard>
         );
@@ -73,13 +79,11 @@ export function WireframeRenderer({ wireframe }: { wireframe: WireframeDefinitio
           <Components.StackLayout
             key={componentId}
             orientation="vertical"
-            gap={componentDef.spacing || 12}
+            gap={definition.spacing || 12}
             style={props.style}
           >
-            {componentDef.children?.map((child: any, index: number) => 
-              typeof child.component === "string"
-                ? renderComponent(child.component)
-                : renderComponent(`inline-${index}`, child)
+            {definition.children?.map((child: any, index: number) => 
+              renderComponent(child, `${componentId}-child-${index}`)
             )}
           </Components.StackLayout>
         );
@@ -89,15 +93,27 @@ export function WireframeRenderer({ wireframe }: { wireframe: WireframeDefinitio
           <Components.StackLayout
             key={componentId}
             orientation="horizontal"
-            gap={componentDef.spacing || 12}
+            gap={definition.spacing || 12}
             style={props.style}
           >
-            {componentDef.children?.map((child: any, index: number) => 
-              typeof child.component === "string"
-                ? renderComponent(child.component)
-                : renderComponent(`inline-${index}`, child)
+            {definition.children?.map((child: any, index: number) => 
+              renderComponent(child, `${componentId}-child-${index}`)
             )}
           </Components.StackLayout>
+        );
+      
+      case "Grid":
+        return (
+          <Components.GridLayout
+            key={componentId}
+            columns={props.columns || 2}
+            gap={props.gap || 12}
+            style={props.style}
+          >
+            {definition.children?.map((child: any, index: number) =>
+              renderComponent(child, `${componentId}-child-${index}`)
+            )}
+          </Components.GridLayout>
         );
 
       case "FlexLayout":
@@ -114,7 +130,7 @@ export function WireframeRenderer({ wireframe }: { wireframe: WireframeDefinitio
                 key={index}
                 header={item.name}
                 footer="Tap to mark priority"
-                background="#111827"
+                variant="elevated"
                 style={{ color: "white", minWidth: 120 }}
               >
                 <div />
@@ -133,27 +149,32 @@ export function WireframeRenderer({ wireframe }: { wireframe: WireframeDefinitio
             renderItem={(item: any, index: number) => (
               <Components.SwipeView
                 key={index}
-                rightItems={[
-                  { content: "Edit", background: "#2563eb" },
-                  { content: "Delete", background: "#ef4444" }
-                ]}
+                rightItems={index === 1 ? [ // Only show swipe actions on second item (index 1)
+                  { content: <Components.InlineIcon name="edit" size={20} />, background: "#94a3b8" },
+                  { content: <Components.InlineIcon name="delete" size={20} />, background: "#f87171" }
+                ] : []}
               >
                 <Components.BorderCard
                   header={item.itemName}
-                  footer={`Loaned ${item.loanedOn ? "2 days ago" : ""}`}
-                  style={{ margin: 8 }}
+                  footer={`${item.borrowerName} • ${item.due}`}
+                  variant="default"
+                  style={{ 
+                    margin: 0, 
+                    borderRadius: 0,
+                    border: "none",
+                    boxShadow: "none",
+                    background: "rgba(255,255,255,0.9)"
+                  }}
                 >
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                      <span style={{ color: "#6b7280", fontSize: 12 }}>Status</span>
-                      <span style={{ fontWeight: 600 }}>{item.status}</span>
-                      <span style={{ color: "#6b7280", fontSize: 12 }}>Due</span>
-                      <span style={{ fontWeight: 600 }}>{item.due}</span>
-                    </div>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <span style={{ color: "#6b7280", fontSize: 12 }}>Borrower</span>
-                      <span>{item.borrowerName}</span>
-                    </div>
+                  <div style={{ 
+                    display: "flex", 
+                    justifyContent: "space-between", 
+                    alignItems: "center",
+                    color: "#64748b",
+                    fontSize: 13
+                  }}>
+                    <span>{item.status}</span>
+                    <span>2 days ago</span>
                   </div>
                 </Components.BorderCard>
               </Components.SwipeView>
@@ -271,47 +292,75 @@ export function WireframeRenderer({ wireframe }: { wireframe: WireframeDefinitio
   const currentPage = wireframe.pages[currentPageId];
 
   return (
-    <div style={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>
-      {/* Tab Bar */}
-      <div style={{ display: "flex", borderBottom: "1px solid #e5e7eb", background: "white" }}>
-        {Object.entries(wireframe.tabs).map(([tabId, tab]: [string, any]) => (
-          <button
-            key={tabId}
-            type="button"
-            style={{
-              padding: "16px 20px",
-              border: "none",
-              background: currentTab === tabId ? "#2563eb" : "transparent",
-              color: currentTab === tabId ? "white" : "#6b7280",
-              fontWeight: 600,
-              cursor: "pointer",
-              borderBottom: currentTab === tabId ? "2px solid #2563eb" : "none"
-            }}
-            onClick={() => setCurrentTab(tabId)}
-          >
-            {tab.title}
-          </button>
-        ))}
-      </div>
-
+    <div style={{ 
+      width: "390px", 
+      height: "844px", 
+      display: "flex", 
+      flexDirection: "column",
+      margin: "0 auto",
+      border: "1px solid #e5e7eb",
+      borderRadius: "24px",
+      overflow: "hidden",
+      background: "#f9fafb",
+      position: "relative"
+    }}>
       {/* Page Content */}
-      <div style={{ flex: 1, overflow: "auto", background: "#f9fafb" }}>
+      <div style={{ flex: 1, overflow: "auto", background: "#f9fafb", paddingBottom: "80px" }}>
         {currentPage?.layout && (
           <div style={{ padding: 16 }}>
             {currentPage.layout.children?.map((child: any, index: number) => 
-              renderComponent(child.component, child.props)
+              renderComponent(child, `page-child-${index}`)
             )}
           </div>
         )}
       </div>
 
+      {/* Bottom Tab Bar */}
+      <div style={{ 
+        display: "flex", 
+        borderTop: "1px solid #e5e7eb", 
+        background: "rgba(255, 255, 255, 0.95)",
+        backdropFilter: "blur(10px)",
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: "80px",
+        paddingTop: "8px"
+      }}>
+        {Object.entries(wireframe.tabs).map(([tabId, tab]: [string, any]) => (
+          <button
+            key={tabId}
+            type="button"
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "4px",
+              padding: "8px 4px",
+              border: "none",
+              background: "transparent",
+              color: currentTab === tabId ? "#6750a4" : "#6b7280",
+              fontSize: "10px",
+              fontWeight: 500,
+              cursor: "pointer"
+            }}
+            onClick={() => setCurrentTab(tabId)}
+          >
+            <Components.InlineIcon 
+              name={tab.icon} 
+              size={20}
+              color={currentTab === tabId ? "#6750a4" : "#6b7280"}
+            />
+            {tab.title}
+          </button>
+        ))}
+      </div>
+
       {/* Floating Action Button */}
-      <Components.FabButton
-        icon="+"
-        label="New loan"
-        onClick={() => setShowPopup("CreateLoanPopup")}
-        position="bottom-right"
-      />
+      {/* FAB handled by individual pages */}
 
       {/* Popups */}
       {showPopup && (

@@ -2,14 +2,14 @@ import { defineWireframe, render as runtimeRender } from "@wirevana/runtime";
 
 const uiMock = defineWireframe({
   $schema: "https://wirevana.dev/schemas/v1",
-  name: "MvpAllComponentsShowcase",
+  name: "MvpMobileNativeShowcase",
   description:
-    "Demonstrates every MVP-supported control, including navigation, lists, cards, forms, and overlays for an item lending tracker.",
+    "Demonstrates mobile-native styling with Material Design 3 and iOS design patterns for an item lending tracker.",
   imports: [
     {
       namespace: "http://schemas.microsoft.com/dotnet/2021/maui",
       description:
-        "Default MAUI controls (Shell, ContentPage, Border, Grid, CollectionView, Entry, Picker, etc.).",
+        "Default MAUI controls with mobile-native styling (Shell, ContentPage, Border, Grid, CollectionView, Entry, Picker, etc.).",
       docUrl: "https://learn.microsoft.com/dotnet/maui/user-interface/controls/",
     },
     {
@@ -25,33 +25,105 @@ const uiMock = defineWireframe({
       description: "Toolkit helpers used for Popup and Snackbar experiences.",
       docUrl: "https://learn.microsoft.com/dotnet/communitytoolkit/maui/overview",
     },
-    {
-      alias: "toolkitViews",
-      namespace: "clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui",
-      description: "Popup visual element hosting the create/edit loan form.",
-      docUrl: "https://learn.microsoft.com/dotnet/communitytoolkit/maui/views/popup",
-    },
-    {
-      alias: "toolkitAlerts",
-      namespace: "clr-namespace:CommunityToolkit.Maui.Alerts;assembly=CommunityToolkit.Maui",
-      description: "Snackbar alert emitted after saving or undoing a loan.",
-      docUrl: "https://learn.microsoft.com/dotnet/communitytoolkit/maui/alerts/snackbar",
-    },
   ],
   metadata: {
     platforms: ["ios", "android"],
     targetHost: "chatgpt-canvas",
+  },
+  styleLibrary: {
+    styles: {
+      // Mobile-native surface styles
+      "hero-card": {
+        surface: "level3",
+        colorRole: "primary",
+        platform: "auto"
+      },
+      "metric-card": {
+        surface: "level2",
+        colorRole: "surface",
+        platform: "auto"
+      },
+      "list-item": {
+        surface: "level0",
+        colorRole: "surface",
+        platform: "auto"
+      },
+      "floating-action": {
+        surface: "level4",
+        colorRole: "primary",
+        variant: "elevated",
+        platform: "auto"
+      },
+      // Typography styles
+      "display-text": {
+        textStyle: "display-large",
+        colorRole: "surface",
+        platform: "auto"
+      },
+      "metric-value": {
+        textStyle: "headline-large",
+        colorRole: "primary",
+        platform: "auto"
+      },
+      "card-title": {
+        textStyle: "title-medium",
+        colorRole: "surface",
+        platform: "auto"
+      },
+      "body-text": {
+        textStyle: "body-medium",
+        colorRole: "surface",
+        platform: "auto"
+      },
+      "caption-text": {
+        textStyle: "label-small",
+        colorRole: "surface",
+        platform: "auto"
+      },
+      // Button styles
+      "primary-action": {
+        surface: "level2",
+        colorRole: "primary",
+        variant: "filled",
+        textStyle: "label-large",
+        platform: "auto"
+      },
+      "secondary-action": {
+        surface: "level1",
+        colorRole: "primary",
+        variant: "tonal",
+        textStyle: "label-large",
+        platform: "auto"
+      },
+      "destructive-action": {
+        surface: "level1",
+        colorRole: "error",
+        variant: "tonal",
+        textStyle: "label-large",
+        platform: "auto"
+      }
+    },
+    platform: "auto",
+    theme: "light",
+    brandColors: {
+      primary: "#94a3b8",
+      secondary: "#94a3b8", 
+      accent: "#cbd5e1"
+    }
   },
   sampleData: {
     items: [
       { id: "dslr", name: "DSLR Camera" },
       { id: "projector", name: "Mini Projector" },
       { id: "tripod", name: "Travel Tripod" },
+      { id: "lens", name: "Wide Angle Lens" },
+      { id: "microphone", name: "Wireless Mic" },
     ],
     borrowers: [
-      { id: "1", name: "Jordan" },
-      { id: "2", name: "Sky" },
-      { id: "3", name: "Harper" },
+      { id: "1", name: "Jordan Smith" },
+      { id: "2", name: "Sky Chen" },
+      { id: "3", name: "Harper Kim" },
+      { id: "4", name: "River Johnson" },
     ],
     loans: [
       {
@@ -59,7 +131,7 @@ const uiMock = defineWireframe({
         itemId: "dslr",
         itemName: "DSLR Camera",
         borrowerId: "1",
-        borrowerName: "Jordan",
+        borrowerName: "Jordan Smith",
         loanedOn: "2024-02-18T18:30:00Z",
         status: "On schedule",
         due: "Due Mar 2",
@@ -69,10 +141,20 @@ const uiMock = defineWireframe({
         itemId: "projector",
         itemName: "Mini Projector",
         borrowerId: "2",
-        borrowerName: "Sky",
+        borrowerName: "Sky Chen",
         loanedOn: "2024-02-16T20:15:00Z",
         status: "Returned",
         due: "Returned Feb 20",
+      },
+      {
+        id: "l3",
+        itemId: "microphone",
+        itemName: "Wireless Mic",
+        borrowerId: "3",
+        borrowerName: "Harper Kim",
+        loanedOn: "2024-02-15T14:20:00Z",
+        status: "Overdue",
+        due: "Was due Feb 25",
       },
     ],
   },
@@ -88,81 +170,113 @@ const uiMock = defineWireframe({
     type: "Shell",
     title: "Borrow Tracker",
     tabBar: "PrimaryTabBar",
+    style: "surface-primary",
   },
   tabs: {
-    HomeTab: { type: "Tab", title: "Home", icon: "home", content: "HomeShellContent" },
+    HomeTab: { 
+      type: "Tab", 
+      title: "Home", 
+      icon: "home", 
+      content: "HomeShellContent",
+      style: "surface-primary"
+    },
     InventoryTab: {
       type: "Tab",
       title: "Inventory",
       icon: "archive",
       content: "InventoryShellContent",
+      style: "surface-primary"
     },
     BorrowersTab: {
       type: "Tab",
       title: "Borrowers",
       icon: "users",
       content: "BorrowersShellContent",
+      style: "surface-primary"
     },
-    LoansTab: { type: "Tab", title: "Loans", icon: "clipboard", content: "LoansShellContent" },
+    LoansTab: { 
+      type: "Tab", 
+      title: "Loans", 
+      icon: "clipboard", 
+      content: "LoansShellContent",
+      style: "surface-primary"
+    },
     SettingsTab: {
       type: "Tab",
       title: "Settings",
       icon: "settings",
       content: "SettingsShellContent",
+      style: "surface-primary"
     },
   },
   pages: {
     HomePage: {
       type: "ContentPage",
       title: "Dashboard",
+      style: "surface-primary",
       layout: {
-        type: "Grid",
-        rows: ["auto", "*", "auto"],
-        columns: ["*"],
+        type: "VerticalStack",
+        spacing: "standard",
+        style: "surface-primary",
         children: [
-          { row: 0, component: "HeroCard" },
-          { row: 1, component: "RecentLoansCollection" },
-          { row: 2, component: "SuccessSnackbar" },
+          { component: "HeroCard" },
+          { component: "RecentLoansCollection" },
         ],
       },
     },
     InventoryPage: {
       type: "ContentPage",
       title: "Inventory",
+      style: "surface-primary",
       layout: {
         type: "VerticalStack",
-        spacing: 16,
-        children: [{ component: "ItemsFlexWrap" }],
+        spacing: "standard",
+        style: "surface-primary",
+        children: [
+          { component: "SearchBar" },
+          { component: "ItemsFlexWrap" }
+        ],
       },
     },
     BorrowersPage: {
       type: "ContentPage",
       title: "Borrowers",
+      style: "surface-primary",
       layout: {
         type: "VerticalStack",
-        spacing: 16,
-        children: [{ component: "ItemsFlexWrap" }],
+        spacing: "standard",
+        style: "surface-primary",
+        children: [
+          { component: "BorrowersGrid" }
+        ],
       },
     },
     LoansPage: {
       type: "ContentPage",
       title: "Loans",
+      style: "surface-primary",
       layout: {
         type: "VerticalStack",
-        spacing: 16,
-        children: [{ component: "ItemsFlexWrap" }],
+        spacing: "standard",
+        style: "surface-primary",
+        children: [
+          { component: "LoanFilters" },
+          { component: "LoansCollection" }
+        ],
       },
     },
     SettingsPage: {
       type: "ContentPage",
       title: "Settings",
+      style: "surface-primary",
       layout: {
         type: "VerticalStack",
-        spacing: 16,
+        spacing: "loose",
+        style: "surface-primary",
         children: [
-          { component: "RemindersSwitch" },
-          { component: "ReminderCadenceRadios" },
-          { component: "FabAnchor" },
+          { component: "NotificationSettings" },
+          { component: "AppearanceSettings" },
+          { component: "DataSettings" },
         ],
       },
     },
@@ -173,227 +287,260 @@ const uiMock = defineWireframe({
     BorrowersShellContent: { type: "ShellContent", page: "BorrowersPage" },
     LoansShellContent: { type: "ShellContent", page: "LoansPage" },
     SettingsShellContent: { type: "ShellContent", page: "SettingsPage" },
+
+    // Hero Dashboard Card with Mobile-Native Styling
     HeroCard: {
       type: "Border",
+      style: "hero-card",
       props: {
-        background: "linear-gradient(135deg, #2563eb 0%, #10b981 100%)",
-        header: "Welcome back!",
-        footer: "Keep tabs on who has what and when it's coming back.",
+        variant: "elevated",
+        padding: "loose"
       },
       layout: {
         type: "VerticalStack",
-        spacing: 12,
+        spacing: "standard",
         children: [
-          { component: "HeroMetrics" },
-          { component: "HeroActions" },
+          { component: "WelcomeText" },
+          { component: "MetricsGrid" },
+          { component: "QuickActions" },
         ],
       },
     },
-    HeroMetrics: {
-      type: "HorizontalStack",
-      spacing: 16,
+
+    WelcomeText: {
+      type: "VerticalStack",
+      spacing: "tight",
+      children: [
+        { 
+          type: "Label", 
+          props: { 
+            text: "Welcome back!", 
+            style: "display-text"
+          } 
+        },
+        { 
+          type: "Label", 
+          props: { 
+            text: "Keep tabs on who has what and when it's coming back.", 
+            style: "body-text"
+          } 
+        },
+      ],
+    },
+
+    MetricsGrid: {
+      type: "Grid",
+      props: {
+        columns: 3,
+        gap: "standard"
+      },
       children: [
         { component: "MetricItemsOut" },
         { component: "MetricDueSoon" },
         { component: "MetricOverdue" },
       ],
     },
+
     MetricItemsOut: {
       type: "Border",
-      props: { background: "rgba(255,255,255,0.15)", header: "Items out", footer: "Currently loaned" },
-      layout: {
-        type: "VerticalStack",
-        children: [{ component: "MetricItemsOutValue" }],
-      },
-    },
-    MetricItemsOutValue: { type: "Label", props: { text: "8", style: "display-hero" } },
-    MetricDueSoon: {
-      type: "Border",
-      props: { background: "rgba(255,255,255,0.15)", header: "Due soon", footer: "Next 7 days" },
-      layout: {
-        type: "VerticalStack",
-        children: [{ component: "MetricDueSoonValue" }],
-      },
-    },
-    MetricDueSoonValue: { type: "Label", props: { text: "3", style: "display-hero" } },
-    MetricOverdue: {
-      type: "Border",
-      props: { background: "rgba(255,255,255,0.15)", header: "Overdue", footer: "Needs attention" },
-      layout: {
-        type: "VerticalStack",
-        children: [{ component: "MetricOverdueValue" }],
-      },
-    },
-    MetricOverdueValue: { type: "Label", props: { text: "1", style: "display-hero" } },
-    HeroActions: {
-      type: "HorizontalStack",
-      spacing: 12,
-      children: [{ component: "QuickAddLoanButton" }, { component: "ViewScheduleButton" }],
-    },
-    QuickAddLoanButton: {
-      type: "Button",
-      props: { text: "Log loan", appearance: "primary" },
-      interactions: { Clicked: "actions.openCreateLoan" },
-    },
-    ViewScheduleButton: {
-      type: "Button",
-      props: { text: "See due dates", appearance: "outlined" },
-    },
-    RecentLoansCollection: {
-      type: "CollectionView",
+      style: "metric-card",
       props: {
-        items: "@sampleData.loans",
-        emptyView: { component: "EmptyLoans" },
+        variant: "elevated",
+        padding: "standard"
       },
-      template: { type: "DataTemplate", component: "LoanSwipeContainer" },
-      footer: { component: "LoansFooter" },
-    },
-    LoanSwipeContainer: {
-      type: "SwipeView",
-      props: {
-        rightItems: [
-          { content: "Edit", background: "#2563eb", action: "actions.editLoan" },
-          { content: "Delete", background: "#ef4444", action: "actions.deleteLoan" },
+      layout: {
+        type: "VerticalStack",
+        spacing: "tight",
+        children: [
+          { type: "Label", props: { text: "8", style: "metric-value" } },
+          { type: "Label", props: { text: "Items out", style: "caption-text" } },
         ],
       },
-      content: { component: "LoanItemCard" },
     },
-    LoanItemCard: {
+
+    MetricDueSoon: {
       type: "Border",
+      style: "metric-card",
       props: {
-        padding: 16,
-        header: "{binding itemName}",
-        footer: "{binding loanedOn, converter=RelativeDate}",
+        variant: "elevated",
+        padding: "standard"
       },
       layout: {
         type: "VerticalStack",
-        spacing: 8,
-        children: [{ component: "LoanStatusRow" }, { component: "LoanBorrowerRow" }],
+        spacing: "tight",
+        children: [
+          { type: "Label", props: { text: "3", style: "metric-value" } },
+          { type: "Label", props: { text: "Due soon", style: "caption-text" } },
+        ],
       },
     },
-    LoanStatusRow: {
-      type: "HorizontalStack",
-      spacing: 12,
-      children: [
-        { type: "Label", props: { text: "Status", style: "label-muted" } },
-        { type: "Label", props: { text: "{binding status}", style: "label-strong" } },
-        { type: "Label", props: { text: "Due", style: "label-muted" } },
-        { type: "Label", props: { text: "{binding due}", style: "label-strong" } },
-      ],
+
+    MetricOverdue: {
+      type: "Border",
+      style: "metric-card",
+      props: {
+        variant: "elevated",
+        padding: "standard",
+        colorRole: "error"
+      },
+      layout: {
+        type: "VerticalStack",
+        spacing: "tight",
+        children: [
+          { type: "Label", props: { text: "1", style: "metric-value" } },
+          { type: "Label", props: { text: "Overdue", style: "caption-text" } },
+        ],
+      },
     },
-    LoanBorrowerRow: {
+
+    QuickActions: {
       type: "HorizontalStack",
-      spacing: 8,
+      spacing: "standard",
       children: [
-        { type: "Label", props: { text: "Borrower", style: "label-muted" } },
-        { type: "Label", props: { text: "{binding borrowerName}", style: "label-default" } },
-      ],
-    },
-    EmptyLoans: {
-      type: "VerticalStack",
-      spacing: 8,
-      children: [
-        { type: "Label", props: { text: "No loans yet", style: "label-strong" } },
-        {
-          type: "Label",
-          props: {
-            text: "Tap the floating action button to track your first loan.",
-            style: "label-muted",
+        { 
+          type: "Button",
+          props: { 
+            text: "Log new loan", 
+            icon: "add",
+            variant: "filled",
+            style: "primary-action"
+          },
+          interactions: { Clicked: "actions.openCreateLoan" },
+        },
+        { 
+          type: "Button",
+          props: { 
+            text: "View schedule", 
+            icon: "calendar",
+            variant: "tonal",
+            style: "secondary-action"
           },
         },
       ],
     },
-    LoansFooter: {
-      type: "Label",
+
+    // Modern Search Bar
+    SearchBar: {
+      type: "Entry",
       props: {
-        text: "Swipe left on any loan to edit or delete.",
-        style: "label-caption",
-        horizontalTextAlignment: "Center",
+        placeholder: "Search inventory...",
+        icon: "search",
+        variant: "filled",
+        style: "surface-secondary"
+      }
+    },
+
+    // Enhanced Collection Views
+    RecentLoansCollection: {
+      type: "CollectionView",
+      style: "list-container",
+      props: {
+        items: "@sampleData.loans",
+        emptyView: { component: "EmptyLoans" },
+      },
+      template: { type: "DataTemplate", component: "ModernLoanCard" },
+      footer: { component: "LoansFooter" },
+    },
+
+    ModernLoanCard: {
+      type: "Border",
+      style: "list-item",
+      props: {
+        variant: "default",
+        padding: "standard"
+      },
+      layout: {
+        type: "HorizontalStack",
+        spacing: "standard",
+        children: [
+          { component: "LoanIcon" },
+          { component: "LoanDetails" },
+          { component: "LoanStatus" },
+        ],
       },
     },
-    ItemsFlexWrap: {
-      type: "FlexLayout",
-      props: { direction: "row", wrap: "wrap", justify: "flex-start", gap: 12 },
-      children: [{ component: "ItemChipTemplate" }],
-    },
-    ItemChipTemplate: {
-      type: "DataTemplate",
-      props: { items: "@sampleData.items" },
-      component: {
-        type: "Border",
-        props: { padding: 12, background: "#111827", footer: "Tap to mark priority" },
-        layout: {
-          type: "VerticalStack",
-          children: [{ type: "Label", props: { text: "{binding name}", style: "label-pill" } }],
-        },
+
+    LoanIcon: {
+      type: "Border",
+      style: "metric-card",
+      props: {
+        variant: "tonal",
+        padding: "tight"
+      },
+      layout: {
+        type: "VerticalStack",
+        children: [
+          { type: "Icon", props: { name: "camera", size: "medium" } }
+        ],
       },
     },
-    RemindersSwitch: {
-      type: "HorizontalStack",
-      spacing: 12,
-      children: [
-        { type: "Label", props: { text: "Loan reminders" } },
-        {
-          type: "Switch",
-          props: { isToggled: "@state.remindersEnabled", onToggle: "actions.toggleReminders" },
-        },
-      ],
-    },
-    ReminderCadenceRadios: {
+
+    LoanDetails: {
       type: "VerticalStack",
-      spacing: 8,
+      spacing: "tight",
+      props: { flex: 1 },
       children: [
-        { type: "Label", props: { text: "Reminder cadence", style: "label-strong" } },
-        {
-          type: "RadioButtonGroup",
-          props: { value: "@state.reminderCadence" },
-          children: [
-            { type: "RadioButton", props: { value: "daily", content: "Daily nudges" } },
-            { type: "RadioButton", props: { value: "weekly", content: "Weekly summaries" } },
-          ],
-        },
+        { type: "Label", props: { text: "{binding itemName}", style: "card-title" } },
+        { type: "Label", props: { text: "Borrowed by {binding borrowerName}", style: "body-text" } },
+        { type: "Label", props: { text: "{binding loanedOn, converter=RelativeDate}", style: "caption-text" } },
       ],
     },
-    FabAnchor: { type: "AbsoluteLayout", children: [{ component: "GlobalLoanFab" }] },
-    GlobalLoanFab: {
-      type: "FabButton",
-      props: { label: "New loan", icon: "+" },
-      interactions: { Clicked: "actions.openCreateLoan" },
+
+    LoanStatus: {
+      type: "Border",
+      props: {
+        variant: "tonal",
+        padding: "tight"
+      },
+      layout: {
+        type: "VerticalStack",
+        children: [
+          { type: "Label", props: { text: "{binding status}", style: "caption-text" } },
+          { type: "Label", props: { text: "{binding due}", style: "caption-text" } },
+        ],
+      },
     },
+
+    // Modern Form Components
     CreateLoanPopup: {
       type: "Popup",
-      props: { title: "Log item loan" },
-      content: { component: "LoanForm" },
-      footer: { component: "LoanFormFooter" },
+      style: "surface-modal",
+      props: { 
+        title: "Log item loan",
+        variant: "elevated"
+      },
+      content: { component: "ModernLoanForm" },
+      footer: { component: "FormActions" },
     },
-    EditLoanPopup: {
-      type: "Popup",
-      props: { title: "Edit item loan" },
-      content: { component: "LoanForm" },
-      footer: { component: "LoanFormFooter" },
-    },
-    LoanForm: {
+
+    ModernLoanForm: {
       type: "VerticalStack",
-      spacing: 16,
+      spacing: "standard",
       children: [
         {
           type: "Picker",
           props: {
             label: "Item",
+            icon: "camera",
             options: "@sampleData.items",
             labelPath: "name",
             valuePath: "id",
             selectedValue: "@state.form.itemId",
+            variant: "outlined",
+            style: "surface-secondary"
           },
         },
         {
           type: "Picker",
           props: {
             label: "Borrower",
+            icon: "profile",
             options: "@sampleData.borrowers",
             labelPath: "name",
             valuePath: "id",
             selectedValue: "@state.form.borrowerId",
+            variant: "outlined",
+            style: "surface-secondary"
           },
         },
         {
@@ -402,53 +549,135 @@ const uiMock = defineWireframe({
             label: "Notes",
             placeholder: "Optional hand-off notes",
             value: "@state.form.notes",
+            icon: "message",
+            variant: "outlined",
+            style: "surface-secondary"
           },
-        },
-        { type: "DatePicker", props: { label: "Loan date", value: "@state.form.loanDate" } },
-        { type: "TimePicker", props: { label: "Pickup time", value: "@state.form.pickupTime" } },
-        {
-          type: "RadioButtonGroup",
-          props: { label: "Status", value: "@state.form.status" },
-          children: [
-            { type: "RadioButton", props: { value: "checked-out", content: "Checked out" } },
-            { type: "RadioButton", props: { value: "returned", content: "Returned" } },
-          ],
         },
         {
           type: "Switch",
-          props: { label: "Send borrower reminder", isToggled: "@state.form.sendReminder" },
+          props: { 
+            label: "Send borrower reminder", 
+            checked: "@state.form.sendReminder",
+            style: "surface-secondary"
+          },
         },
       ],
     },
-    LoanFormFooter: {
+
+    FormActions: {
       type: "HorizontalStack",
-      spacing: 12,
+      spacing: "standard",
+      props: { justify: "flex-end" },
       children: [
         {
           type: "Button",
-          props: { text: "Cancel", appearance: "text" },
+          props: { 
+            text: "Cancel", 
+            variant: "text",
+            style: "secondary-action"
+          },
           interactions: { Clicked: "actions.closePopup" },
         },
         {
           type: "Button",
-          props: { text: "Save loan", appearance: "primary" },
+          props: { 
+            text: "Save loan", 
+            variant: "filled",
+            icon: "save",
+            style: "primary-action"
+          },
           interactions: { Clicked: "actions.saveLoan" },
         },
       ],
     },
-    SuccessSnackbar: {
-      type: "Snackbar",
+
+    // Modern Settings Components
+    NotificationSettings: {
+      type: "Border",
+      style: "list-item",
       props: {
-        message: "Loan saved",
-        actionLabel: "Undo",
-        isVisible: "@state.flags.showLoanSnackbar",
+        variant: "outlined",
+        padding: "standard"
       },
-      interactions: { ActionInvoked: "actions.undoDelete" },
+      layout: {
+        type: "VerticalStack",
+        spacing: "standard",
+        children: [
+          { type: "Label", props: { text: "Notifications", style: "card-title" } },
+          { component: "RemindersSwitch" },
+          { component: "ReminderFrequency" },
+        ],
+      },
+    },
+
+    RemindersSwitch: {
+      type: "Switch",
+      props: { 
+        label: "Loan reminders", 
+        checked: "@state.remindersEnabled",
+        size: "medium"
+      },
+    },
+
+    ReminderFrequency: {
+      type: "Picker",
+      props: {
+        label: "Reminder frequency",
+        options: [
+          { value: "daily", label: "Daily" },
+          { value: "weekly", label: "Weekly" },
+          { value: "monthly", label: "Monthly" }
+        ],
+        value: "@state.reminderCadence",
+        variant: "filled",
+        style: "surface-secondary"
+      }
+    },
+
+    // Enhanced FAB
+    GlobalLoanFab: {
+      type: "FabButton",
+      style: "floating-action",
+      props: { 
+        icon: "add",
+        variant: "filled",
+        size: "large",
+        accessibilityLabel: "Add new loan"
+      },
+      interactions: { Clicked: "actions.openCreateLoan" },
+    },
+
+    // Empty states and other components...
+    EmptyLoans: {
+      type: "VerticalStack",
+      spacing: "standard",
+      props: { alignment: "center", padding: "loose" },
+      children: [
+        { type: "Icon", props: { name: "clipboard", size: "large" } },
+        { type: "Label", props: { text: "No loans yet", style: "card-title" } },
+        {
+          type: "Label",
+          props: {
+            text: "Tap the floating action button to track your first loan.",
+            style: "body-text",
+          },
+        },
+      ],
+    },
+
+    LoansFooter: {
+      type: "Label",
+      props: {
+        text: "Swipe left on any loan to edit or delete.",
+        style: "caption-text",
+        horizontalTextAlignment: "Center",
+      },
     },
   },
   state: {
     remindersEnabled: true,
-    reminderCadence: "daily",
+    reminderCadence: "weekly",
     form: {
       itemId: "dslr",
       borrowerId: "1",
@@ -459,15 +688,20 @@ const uiMock = defineWireframe({
       sendReminder: true,
     },
     flags: {
-      showLoanSnackbar: true,
+      showLoanSnackbar: false,
     },
   },
   render: "shell",
   rootComponents: {
-    shell: { type: "Shell", tabBar: "PrimaryTabBar" },
+    shell: { 
+      type: "Shell", 
+      tabBar: "PrimaryTabBar",
+      style: "surface-primary"
+    },
     PrimaryTabBar: {
       type: "TabBar",
       tabs: ["HomeTab", "InventoryTab", "BorrowersTab", "LoansTab", "SettingsTab"],
+      style: "surface-primary"
     },
   },
 });
@@ -475,11 +709,19 @@ const uiMock = defineWireframe({
 export function renderToCanvas(canvasEl: HTMLElement, context?: any): any {
   // Use the runtime render function to initialize the wireframe  
   runtimeRender(uiMock);
-  console.log("Wireframe rendered:", uiMock.name);
+  console.log("Mobile-native wireframe rendered:", uiMock.name);
   return uiMock;
 }
 
 // Alias for compatibility with CLI fallback
 export const render = renderToCanvas;
+
+// Optional debug render (manual iterative component stepping)
+export function renderDebug(canvasEl: HTMLElement) {
+  const root = (canvasEl as any).root || null;
+  // In a full environment we'd create a React root; here we just log intent.
+  console.log("[wirevana] Debug mode requested. Use <DebugWireframePlayer wireframe={uiMock} /> inside a React app.");
+  return uiMock;
+}
 
 export default uiMock;

@@ -8,6 +8,9 @@ build/
 lib/
 *.tsbuildinfo
 
+# Canvas build artifacts
+dist/canvas/
+
 # TypeScript
 *.js
 *.js.map
@@ -44,23 +47,16 @@ coverage/
 # nyc test coverage
 .nyc_output
 
-# Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
-.grunt
+# Vitest
+.vitest/
 
-# Bower dependency directory (https://bower.io/)
-bower_components
+# Testing
+test-results/
+playwright-report/
+playwright/.cache/
 
-# node-waf configuration
-.lock-wscript
-
-# Compiled binary addons (https://nodejs.org/api/addons.html)
-build/Release
-
-# Dependency directories
-jspm_packages/
-
-# TypeScript cache
-*.tsbuildinfo
+# Turborepo cache
+.turbo/
 
 # Optional npm cache directory
 .npm
@@ -81,22 +77,6 @@ jspm_packages/
 .cache
 .parcel-cache
 
-# Next.js build output
-.next
-out
-
-# Nuxt.js build / generate output
-.nuxt
-dist
-
-# Gatsby files
-.cache/
-public
-
-# Storybook build outputs
-.out
-.storybook-out
-
 # Temporary folders
 tmp/
 temp/
@@ -112,6 +92,9 @@ temp/
 *.sw?
 *~
 
+# Dev container volumes
+.devcontainer/.vscode/
+
 # OS generated files
 .DS_Store
 .DS_Store?
@@ -126,15 +109,3 @@ Thumbs.db
 *.iml
 *.ipr
 *.iws
-
-# Jest
-coverage/
-
-# Cypress
-cypress/videos/
-cypress/screenshots/
-
-# Playwright
-test-results/
-playwright-report/
-playwright/.cache/

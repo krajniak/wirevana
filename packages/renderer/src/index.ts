@@ -1,10 +1,12 @@
 export * from "./components";
 export * from "./canvas/adapter";
+export * from "./WireframeRenderer";
 
 import React from "react";
 import { createRoot } from "react-dom/client";
 import { BorderCard } from "./components/Card";
 import { getCanvasHostAdapter } from "./canvas/adapter";
+import { WireframeRenderer } from "./WireframeRenderer";
 
 export function renderToCanvas(canvasEl: HTMLElement, context?: any) {
   if (!canvasEl) {
@@ -32,19 +34,9 @@ export function renderToCanvas(canvasEl: HTMLElement, context?: any) {
     return;
   }
 
-  // Render a preview of the wireframe
+  // Render the interactive wireframe
   root.render(
-    React.createElement(BorderCard, {
-      header: wireframe.name || "Wirevana Wireframe",
-      footer: wireframe.description || "Interactive wireframe preview",
-      background: "linear-gradient(135deg, #2563eb 0%, #10b981 100%)",
-      style: { margin: 20, color: "white" },
-      children: React.createElement("div", null, 
-        React.createElement("p", null, `Components: ${Object.keys(wireframe.components || {}).length}`),
-        React.createElement("p", null, `Pages: ${Object.keys(wireframe.pages || {}).length}`),
-        React.createElement("p", null, `Tabs: ${Object.keys(wireframe.tabs || {}).length}`)
-      )
-    })
+    React.createElement(WireframeRenderer, { wireframe })
   );
 
   // Notify adapter that rendering is complete

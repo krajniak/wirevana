@@ -29,11 +29,9 @@ async function createVirtualEntry(entryModule: string) {
   const runtimeEntry = path.resolve(__dirname, "../../runtime/src/index.ts");
   const rendererEntry = path.resolve(__dirname, "../../renderer/src/index.ts");
 
-  const virtualSource = `import * as runtime from ${JSON.stringify(
-    pathToFileURL(runtimeEntry).href
-  )};
-import * as renderer from ${JSON.stringify(pathToFileURL(rendererEntry).href)};
-import * as userModule from ${JSON.stringify(pathToFileURL(entryModule).href)};
+  const virtualSource = `import * as runtime from "@wirevana/runtime";
+import * as renderer from "@wirevana/renderer";
+import * as userModule from ${JSON.stringify(entryModule)};
 
 const runtimeContext = { runtime, renderer, module: userModule };
 

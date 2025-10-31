@@ -22,54 +22,67 @@ function isCanvasEnvelope(value: unknown): value is CanvasEnvelope {
 
 export class CanvasHostAdapter {
   private readonly handlers = new Map<string, Set<CanvasMessageHandler>>();
-  private readonly hostWindow: Window;
+  private readonly hostWindow?: Window;
   private readonly targetOrigin: string;
-  private readonly listener: (event: MessageEvent) => void;
+  private readonly listener?: (event: MessageEvent) => void;
+  private readonly isStandalone: boolean;
 
   public constructor(targetOrigin: string = CHATGPT_CANVAS_ORIGIN) {
     if (typeof window === "undefined") {
       throw new Error("CanvasHostAdapter can only run in a browser context.");
     }
 
-    if (window.parent === window) {
-      throw new Error(
-        "CanvasHostAdapter expects to run inside ChatGPT Canvas within an iframe."
-      );
+    // Check if we're running in an iframe (inside ChatGPT Canvas)
+    this.isStandalone = window.parent === window;
+    
+    if (this.isStandalone) {
+      // Running standalone - no iframe communication needed
+      this.hostWindow = undefined;
+      this.targetOrigin = targetOrigin;
+      this.listener = undefined;
+      console.log("[wirevana] Running in standalone mode - no iframe communication");
+    } else {
+      // Running inside ChatGPT Canvas iframe
+      this.hostWindow = window.parent;
+      this.targetOrigin = targetOrigin;
+
+      this.listener = (event: MessageEvent) => {
+        if (event.origin !== this.targetOrigin) {
+          return;
+        }
+
+        if (!isCanvasEnvelope(event.data)) {
+          return;
+        }
+
+        const { type, payload } = event.data;
+        const typeHandlers = this.handlers.get(type);
+        if (!typeHandlers) {
+          return;
+        }
+
+        typeHandlers.forEach((handler) => handler(payload, event));
+      };
+
+      window.addEventListener("message", this.listener);
+      this.post("ready", { timestamp: Date.now() });
     }
-
-    this.hostWindow = window.parent;
-    this.targetOrigin = targetOrigin;
-
-    this.listener = (event: MessageEvent) => {
-      if (event.origin !== this.targetOrigin) {
-        return;
-      }
-
-      if (!isCanvasEnvelope(event.data)) {
-        return;
-      }
-
-      const { type, payload } = event.data;
-      const typeHandlers = this.handlers.get(type);
-      if (!typeHandlers) {
-        return;
-      }
-
-      typeHandlers.forEach((handler) => handler(payload, event));
-    };
-
-    window.addEventListener("message", this.listener);
-    this.post("ready", { timestamp: Date.now() });
   }
 
   public post<T = unknown>(type: string, payload?: T) {
+    if (this.isStandalone) {
+      // In standalone mode, just log the message
+      console.log(`[wirevana] Standalone mode - would post: ${type}`, payload);
+      return;
+    }
+
     const envelope: CanvasEnvelope<T> = {
       source: "wirevana",
       type,
       payload,
     };
 
-    this.hostWindow.postMessage(envelope, this.targetOrigin);
+    this.hostWindow!.postMessage(envelope, this.targetOrigin);
   }
 
   public on<T = unknown>(type: string, handler: CanvasMessageHandler<T>) {
@@ -94,7 +107,9 @@ export class CanvasHostAdapter {
   }
 
   public dispose() {
-    window.removeEventListener("message", this.listener);
+    if (!this.isStandalone && this.listener) {
+      window.removeEventListener("message", this.listener);
+    }
     this.handlers.clear();
   }
 }

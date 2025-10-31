@@ -29,11 +29,9 @@ async function createVirtualEntry(entryModule: string) {
   const runtimeEntry = path.resolve(__dirname, "../../runtime/src/index.ts");
   const rendererEntry = path.resolve(__dirname, "../../renderer/src/index.ts");
 
-  const virtualSource = `import * as runtime from ${JSON.stringify(
-    pathToFileURL(runtimeEntry).href
-  )};
-import * as renderer from ${JSON.stringify(pathToFileURL(rendererEntry).href)};
-import * as userModule from ${JSON.stringify(pathToFileURL(entryModule).href)};
+  const virtualSource = `import * as runtime from "@wirevana/runtime";
+import * as renderer from "@wirevana/renderer";
+import * as userModule from ${JSON.stringify(entryModule)};
 
 const runtimeContext = { runtime, renderer, module: userModule };
 
@@ -46,21 +44,10 @@ export async function renderToCanvas(canvasEl: HTMLElement) {
     throw new Error("renderToCanvas(canvasEl) requires a valid canvas element.");
   }
 
-  const candidate =
-    (userModule as Record<string, unknown>).renderToCanvas ??
-    (userModule as Record<string, unknown>).render;
-
-  if (typeof candidate === "function") {
-    const result = candidate(canvasEl, runtimeContext);
-    if (isPromise(result)) {
-      await result;
-    }
-    return runtimeContext;
-  }
-
-  const fallback = (renderer as Record<string, unknown>).renderToCanvas;
-  if (typeof fallback === "function") {
-    const result = fallback(canvasEl, runtimeContext);
+  // Always use the renderer's renderToCanvas function for actual DOM rendering
+  const rendererRenderToCanvas = (renderer as Record<string, unknown>).renderToCanvas;
+  if (typeof rendererRenderToCanvas === "function") {
+    const result = rendererRenderToCanvas(canvasEl, runtimeContext);
     if (isPromise(result)) {
       await result;
     }
@@ -68,7 +55,7 @@ export async function renderToCanvas(canvasEl: HTMLElement) {
   }
 
   throw new Error(
-    "Wirevana Canvas bundle requires the entry module to export a renderToCanvas(canvasEl) or render() function."
+    "Wirevana Canvas bundle requires the renderer to export a renderToCanvas(canvasEl) function."
   );
 }
 
@@ -115,6 +102,10 @@ async function runBuild(entryPath: string) {
         "@wirevana/runtime": runtimeEntry,
         "@wirevana/renderer": rendererEntry,
       };
+      // Bundle React dependencies instead of marking them as external
+      options.external = options.external ? 
+        options.external.filter(ext => !ext.startsWith('react')) : 
+        [];
     },
   });
 

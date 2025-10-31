@@ -1,6 +1,7 @@
 export * from "./components";
 export * from "./canvas/adapter";
 export * from "./WireframeRenderer";
+export * from "./DebugWireframePlayer";
 
 import React from "react";
 import { createRoot } from "react-dom/client";

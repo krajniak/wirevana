@@ -44,7 +44,7 @@ const uiMock = defineWireframe({
         platform: "auto"
       },
       "list-item": {
-        surface: "level1",
+        surface: "level0",
         colorRole: "surface",
         platform: "auto"
       },
@@ -106,9 +106,9 @@ const uiMock = defineWireframe({
     platform: "auto",
     theme: "light",
     brandColors: {
-      primary: "#6750a4",
-      secondary: "#625b71",
-      accent: "#7d5260"
+      primary: "#94a3b8",
+      secondary: "#94a3b8", 
+      accent: "#cbd5e1"
     }
   },
   sampleData: {
@@ -446,7 +446,7 @@ const uiMock = defineWireframe({
       type: "Border",
       style: "list-item",
       props: {
-        variant: "elevated",
+        variant: "default",
         padding: "standard"
       },
       layout: {

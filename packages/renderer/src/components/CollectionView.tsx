@@ -69,11 +69,11 @@ export function SwipeView({
   leftItems = [],
   rightItems = [],
   children,
-  maxReveal = 72,
+  maxReveal = 120, // Reduced width for better proportions
 }: SwipeViewProps) {
   const renderSide = (
     items: readonly SwipeItem[],
-    align: "flex-start" | "flex-end"
+    side: "left" | "right"
   ) => {
     if (items.length === 0) {
       return null;
@@ -83,11 +83,11 @@ export function SwipeView({
       <div
         style={{
           display: "flex",
-          flexDirection: "column",
-          alignItems: align,
-          gap: 6,
-          padding: 8,
-          minWidth: maxReveal,
+          flexDirection: "row",
+          justifyContent: side === 'left' ? "flex-start" : "flex-end",
+          alignItems: "stretch",
+          width: maxReveal,
+          opacity: 0.8, // More transparent for wireframe look
         }}
       >
         {items.map((item, index) => (
@@ -96,12 +96,15 @@ export function SwipeView({
             style={{
               background: item.background ?? "#ef4444",
               color: "white",
-              borderRadius: 8,
-              padding: "8px 12px",
-              minWidth: maxReveal - 16,
-              textAlign: "center",
-              boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flex: 1,
+              cursor: "pointer",
+              transition: "background-color 0.2s ease",
+              border: "1px solid rgba(255,255,255,0.2)",
             }}
+            onClick={() => console.log(`Action: ${item.content}`)}
           >
             {item.content}
           </div>
@@ -117,14 +120,13 @@ export function SwipeView({
         alignItems: "stretch",
         width: "100%",
         overflow: "hidden",
-        borderRadius: 12,
-        boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
         background: "white",
+        border: "1px solid #e2e8f0", // Add border instead of shadow
+        borderRadius: 8,
       }}
     >
-      {renderSide(leftItems, "flex-start")}
       <div style={{ flex: 1 }}>{children}</div>
-      {renderSide(rightItems, "flex-end")}
+      {renderSide(rightItems, "right")}
     </div>
   );
 }

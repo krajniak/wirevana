@@ -149,27 +149,32 @@ export function WireframeRenderer({ wireframe }: { wireframe: WireframeDefinitio
             renderItem={(item: any, index: number) => (
               <Components.SwipeView
                 key={index}
-                rightItems={[
-                  { content: "Edit", background: "#2563eb" },
-                  { content: "Delete", background: "#ef4444" }
-                ]}
+                rightItems={index === 1 ? [ // Only show swipe actions on second item (index 1)
+                  { content: <Components.InlineIcon name="edit" size={20} />, background: "#94a3b8" },
+                  { content: <Components.InlineIcon name="delete" size={20} />, background: "#f87171" }
+                ] : []}
               >
                 <Components.BorderCard
                   header={item.itemName}
-                  footer={`Loaned ${item.loanedOn ? "2 days ago" : ""}`}
-                  style={{ margin: 8 }}
+                  footer={`${item.borrowerName} • ${item.due}`}
+                  variant="default"
+                  style={{ 
+                    margin: 0, 
+                    borderRadius: 0,
+                    border: "none",
+                    boxShadow: "none",
+                    background: "rgba(255,255,255,0.9)"
+                  }}
                 >
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                      <span style={{ color: "#6b7280", fontSize: 12 }}>Status</span>
-                      <span style={{ fontWeight: 600 }}>{item.status}</span>
-                      <span style={{ color: "#6b7280", fontSize: 12 }}>Due</span>
-                      <span style={{ fontWeight: 600 }}>{item.due}</span>
-                    </div>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <span style={{ color: "#6b7280", fontSize: 12 }}>Borrower</span>
-                      <span>{item.borrowerName}</span>
-                    </div>
+                  <div style={{ 
+                    display: "flex", 
+                    justifyContent: "space-between", 
+                    alignItems: "center",
+                    color: "#64748b",
+                    fontSize: 13
+                  }}>
+                    <span>{item.status}</span>
+                    <span>2 days ago</span>
                   </div>
                 </Components.BorderCard>
               </Components.SwipeView>

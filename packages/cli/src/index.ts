@@ -44,21 +44,10 @@ export async function renderToCanvas(canvasEl: HTMLElement) {
     throw new Error("renderToCanvas(canvasEl) requires a valid canvas element.");
   }
 
-  const candidate =
-    (userModule as Record<string, unknown>).renderToCanvas ??
-    (userModule as Record<string, unknown>).render;
-
-  if (typeof candidate === "function") {
-    const result = candidate(canvasEl, runtimeContext);
-    if (isPromise(result)) {
-      await result;
-    }
-    return runtimeContext;
-  }
-
-  const fallback = (renderer as Record<string, unknown>).renderToCanvas;
-  if (typeof fallback === "function") {
-    const result = fallback(canvasEl, runtimeContext);
+  // Always use the renderer's renderToCanvas function for actual DOM rendering
+  const rendererRenderToCanvas = (renderer as Record<string, unknown>).renderToCanvas;
+  if (typeof rendererRenderToCanvas === "function") {
+    const result = rendererRenderToCanvas(canvasEl, runtimeContext);
     if (isPromise(result)) {
       await result;
     }
@@ -66,7 +55,7 @@ export async function renderToCanvas(canvasEl: HTMLElement) {
   }
 
   throw new Error(
-    "Wirevana Canvas bundle requires the entry module to export a renderToCanvas(canvasEl) or render() function."
+    "Wirevana Canvas bundle requires the renderer to export a renderToCanvas(canvasEl) function."
   );
 }
 

@@ -113,6 +113,10 @@ async function runBuild(entryPath: string) {
         "@wirevana/runtime": runtimeEntry,
         "@wirevana/renderer": rendererEntry,
       };
+      // Bundle React dependencies instead of marking them as external
+      options.external = options.external ? 
+        options.external.filter(ext => !ext.startsWith('react')) : 
+        [];
     },
   });
 

@@ -33,6 +33,12 @@ importers:
       '@wirevana/runtime':
         specifier: workspace:*
         version: link:../runtime
+      react:
+        specifier: ^19.2.0
+        version: 19.2.0
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.0(react@19.2.0)
       tsup:
         specifier: ^7.2.0
         version: 7.3.0(typescript@5.9.3)

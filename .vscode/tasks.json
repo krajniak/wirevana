@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Monorepo: Install",
+      "type": "shell",
+      "command": "pnpm install",
+      "problemMatcher": []
+    },
+    {
+      "label": "Monorepo: Build All",
+      "type": "shell",
+      "command": "pnpm -r run build",
+      "group": "build",
+      "problemMatcher": ["$tsc"],
+      "presentation": {
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "Packages: Publish",
+      "type": "shell",
+      "command": "pnpm publish-packages",
+      "problemMatcher": []
+    }
+  ]
+}

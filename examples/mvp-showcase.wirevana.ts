@@ -1,4 +1,4 @@
-import { defineWireframe, render } from "@wirevana/runtime";
+import { defineWireframe, render as runtimeRender } from "@wirevana/runtime";
 
 const uiMock = defineWireframe({
   $schema: "https://wirevana.dev/schemas/v1",
@@ -498,6 +498,14 @@ const uiMock = defineWireframe({
   },
 });
 
-render(uiMock);
+export function renderToCanvas(canvasEl: HTMLElement, context?: any): any {
+  // Use the runtime render function to initialize the wireframe  
+  runtimeRender(uiMock);
+  console.log("Wireframe rendered:", uiMock.name);
+  return uiMock;
+}
+
+// Alias for compatibility with CLI fallback
+export const render = renderToCanvas;
 
 export default uiMock;

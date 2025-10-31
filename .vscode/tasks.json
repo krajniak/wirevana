@@ -26,7 +26,7 @@
     {
       "label": "Run Wirevana Showcase",
       "type": "shell",
-      "command": "python3 -m http.server --directory dist 8080",
+      "command": "python3 -m http.server --directory dist --bind 0.0.0.0 3000",
       "isBackground": true,
       "problemMatcher": [],
       "dependsOn": [

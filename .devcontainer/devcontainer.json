@@ -5,6 +5,7 @@
   "features": {},
   "onCreateCommand": "sudo corepack enable pnpm",
   "postCreateCommand": "pnpm install && pnpm -r run build",
+  "postStartCommand": "echo 'Wirevana development environment ready! Use Run -> Start Debugging to launch the showcase.'",
   "forwardPorts": [3000],
   "customizations": {
     "vscode": {

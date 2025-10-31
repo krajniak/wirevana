@@ -5,7 +5,16 @@
       "label": "Monorepo: Install",
       "type": "shell",
       "command": "pnpm install",
-      "problemMatcher": []
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
     },
     {
       "label": "Monorepo: Build All",
@@ -14,34 +23,185 @@
       "group": "build",
       "problemMatcher": ["$tsc"],
       "presentation": {
-        "reveal": "always"
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "dependsOn": ["Monorepo: Install"]
+    },
+    {
+      "label": "Build Canvas",
+      "type": "shell",
+      "command": "node packages/cli/dist/index.js build-canvas ./examples/mvp-showcase.wirevana.ts",
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "dependsOn": ["Monorepo: Build All"]
+    },
+    {
+      "label": "Setup and Build Everything",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Monorepo: Install",
+        "Monorepo: Build All", 
+        "Build Canvas"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "Start HTTP Server",
+      "type": "shell",
+      "command": "python3 -m http.server --directory dist --bind 0.0.0.0 3000",
+      "isBackground": true,
+      "group": "build",
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^Serving HTTP on (.+) port (.+) \\(http://(.+)\\) \\.\\.\\.$",
+          "file": 1,
+          "line": 2,
+          "column": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^Serving HTTP",
+          "endsPattern": "^Serving HTTP on (.+) port (.+) \\(http://(.+)\\) \\.\\.\\.$"
+        }
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "dependsOn": ["Setup and Build Everything"]
+    },
+    {
+      "label": "Open Simple Browser",
+      "type": "shell",
+      "command": "sleep 2",
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": false,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+    {
+      "label": "Kill Server",
+      "type": "shell",
+      "command": "pkill -f 'python3.*http.server.*3000' || echo 'No server running on port 3000'",
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
       }
     },
     {
       "label": "Packages: Publish",
       "type": "shell",
       "command": "pnpm publish-packages",
+      "group": "build",
       "problemMatcher": []
     },
     {
-      "label": "Run Wirevana Showcase",
-      "type": "shell",
-      "command": "python3 -m http.server --directory dist --bind 0.0.0.0 3000",
-      "isBackground": true,
-      "problemMatcher": [],
+      "label": "Start HTTP Server and Open Browser",
+      "dependsOrder": "sequence",
       "dependsOn": [
-        "build-canvas"
+        "Kill Server",
+        "Setup and Build Everything",
+        "Start HTTP Server",
+        "Open Simple Browser"
       ],
       "group": {
         "kind": "build",
         "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
       }
     },
     {
-      "label": "build-canvas",
+      "label": "Open Simple Browser",
       "type": "shell",
-      "command": "node packages/cli/dist/index.js build-canvas ./examples/mvp-showcase.wirevana.ts",
-      "problemMatcher": []
+      "command": "sleep 3 && code --open-url http://localhost:3000",
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": false,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+    {
+      "label": "Quick Build and Run",
+      "type": "shell",
+      "command": "pnpm -r run build && node packages/cli/dist/index.js build-canvas ./examples/mvp-showcase.wirevana.ts && python3 -m http.server --directory dist --bind 0.0.0.0 3000",
+      "isBackground": true,
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^Serving HTTP on (.+) port (.+) \\(http://(.+)\\) \\.\\.\\.$",
+          "file": 1,
+          "line": 2,
+          "column": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^Serving HTTP",
+          "endsPattern": "^Serving HTTP on (.+) port (.+) \\(http://(.+)\\) \\.\\.\\.$"
+        }
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
     }
   ]
 }

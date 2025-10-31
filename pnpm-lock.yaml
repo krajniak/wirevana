@@ -27,9 +27,6 @@ importers:
 
   packages/cli:
     dependencies:
-      '@types/node':
-        specifier: ^20.0.0
-        version: 20.19.24
       '@wirevana/renderer':
         specifier: workspace:*
         version: link:../renderer
@@ -45,6 +42,10 @@ importers:
       tsup:
         specifier: ^7.2.0
         version: 7.3.0(typescript@5.9.3)
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.24
 
   packages/renderer:
     dependencies:

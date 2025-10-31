@@ -11,6 +11,7 @@ Key Choices
 * User: Non-root `node` for parity and lower risk.
 * pnpm: Enabled via Corepack during `onCreateCommand` (first container creation). Uses the image's global Node install; we invoke `sudo corepack enable pnpm` to elevate just for the shim creation, then run `pnpm install` as the `node` user.
 * Extensions: ESLint, Prettier, TypeScript Next, Copilot, Vitest Explorer.
+* Settings: Format on save enabled, TypeScript SDK set to `node_modules/typescript/lib`, end-of-line set to LF.
 * Lifecycle:
   * `onCreateCommand`: `sudo corepack enable pnpm && pnpm install` (runs only once when the container is first created).
   * `postCreateCommand`: `pnpm -r run build` (runs after the initial create completes). No automatic build on every start to keep restarts fast.

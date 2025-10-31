@@ -132,7 +132,7 @@ const uiMock = defineWireframe({
       layout: {
         type: "VerticalStack",
         spacing: 16,
-        children: [{ component: "InventoryPlaceholder" }],
+        children: [{ component: "ItemsFlexWrap" }],
       },
     },
     BorrowersPage: {
@@ -141,7 +141,7 @@ const uiMock = defineWireframe({
       layout: {
         type: "VerticalStack",
         spacing: 16,
-        children: [{ component: "BorrowersPlaceholder" }],
+        children: [{ component: "ItemsFlexWrap" }],
       },
     },
     LoansPage: {
@@ -444,32 +444,6 @@ const uiMock = defineWireframe({
         isVisible: "@state.flags.showLoanSnackbar",
       },
       interactions: { ActionInvoked: "actions.undoDelete" },
-    },
-    InventoryPlaceholder: {
-      type: "Border",
-      props: { header: "Inventory", footer: "Future: catalog lending-ready gear" },
-      layout: {
-        type: "VerticalStack",
-        children: [
-          {
-            type: "Label",
-            props: { text: "This tab will surface items you plan to share soon." },
-          },
-        ],
-      },
-    },
-    BorrowersPlaceholder: {
-      type: "Border",
-      props: { header: "Borrowers", footer: "Future: share pickup reminders" },
-      layout: {
-        type: "VerticalStack",
-        children: [
-          {
-            type: "Label",
-            props: { text: "Keep an eye on contact info, history, and follow-ups here." },
-          },
-        ],
-      },
     },
   },
   state: {

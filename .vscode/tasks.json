@@ -99,9 +99,36 @@
       "dependsOn": ["Setup and Build Everything"]
     },
     {
-      "label": "Kill Server",
+      "label": "Start Enhanced Server",
       "type": "shell",
-      "command": "pkill -f 'python3.*http.server.*3000' || echo 'No server running on port 3000'",
+      "command": "node wirevana-server.mjs",
+      "isBackground": true,
+      "group": "build",
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "🚀 Wirevana server running at (.+)",
+          "file": 1
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "🚀 Wirevana server running",
+          "endsPattern": "📁 Serving files from:"
+        }
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "dependsOn": ["Setup and Build Everything"]
+    },
+    {
+      "label": "Kill Enhanced Server",
+      "type": "shell",
+      "command": "echo 'Killing any existing servers...' && (pkill -9 -f 'wirevana-server.mjs' 2>/dev/null || true) && (pkill -9 -f 'node.*wirevana-server.mjs' 2>/dev/null || true) && (lsof -ti:3000 | xargs kill -9 2>/dev/null || true) && sleep 1 && echo 'Server kill complete'",
       "group": "build",
       "problemMatcher": [],
       "presentation": {
@@ -111,6 +138,28 @@
         "panel": "shared",
         "showReuseMessage": false,
         "clear": false
+      }
+    },
+    {
+      "label": "Start Enhanced Server and Open Browser",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Kill Enhanced Server",
+        "Setup and Build Everything",
+        "Start Enhanced Server",
+        "Open Simple Browser"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
       }
     },
     {
@@ -139,7 +188,7 @@
       ],
       "group": {
         "kind": "build",
-        "isDefault": true
+        "isDefault": false
       },
       "presentation": {
         "echo": true,
